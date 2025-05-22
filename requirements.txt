@@ -3,3 +3,9 @@ openai>=1.0.0
 msal>=1.20.0
 requests>=2.31.0
 python-dotenv>=1.0.0
+
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+google-api-python-client

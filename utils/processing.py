@@ -3,22 +3,18 @@
 import random
 import requests
 import os
-from dotenv import load_dotenv
 import streamlit as st
 
-# Load environment variables
-load_dotenv()
-
-# Get token and URL from environment variables
-API_TOKEN = os.getenv('API_TOKEN')
-API_URL = os.getenv('API_URL')
+# Get token and URL from Streamlit secrets
+API_TOKEN = st.secrets.get("API_TOKEN")
+API_URL = st.secrets.get("API_URL")
 
 if not API_TOKEN:
-    raise ValueError("API_TOKEN environment variable is not set")
+    raise ValueError("API_TOKEN not found in Streamlit secrets")
 if not API_URL:
-    raise ValueError("API_URL environment variable is not set")
+    raise ValueError("API_URL not found in Streamlit secrets")
 
-def get_transition_from_gpt(para_a, para_b, examples, client, model="gpt-4"):
+def get_transition_from_gpt(para_a, para_b, examples, model="gpt-4"):
     """
     Generate a context-aware French transition (max 5 words)
     using few-shot prompting from the examples list and OpenAI GPT.

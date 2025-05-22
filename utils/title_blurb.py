@@ -38,7 +38,7 @@ Titre : [titre généré]
 Chapeau : [chapeau généré]
 """
 
-def generate_title_and_blurb(paragraph, client):
+def generate_title_and_blurb(paragraph):
     # Prepare the prompt dictionary
     prompt_dict = {
         "model": "gpt-4",
