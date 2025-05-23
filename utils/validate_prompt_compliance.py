@@ -125,29 +125,29 @@ def display_validation_results(results):
     Display validation results using Streamlit components in a clean, organized format.
     Also prints results to console.
     """
-    # Print to streamlit logs
-    st.write("\n=== Validation Results ===")
-    st.write(f"Total Outputs: {results['total_outputs']}")
-    st.write(f"Outputs with Violations: {results['outputs_with_violations']}")
+    # Log to Streamlit
+    st.text("\n=== Validation Results ===")
+    st.text(f"Total Outputs: {results['total_outputs']}")
+    st.text(f"Outputs with Violations: {results['outputs_with_violations']}")
     
-    st.write("\n=== Violations Summary ===")
-    st.write("\nRepetition Violations:")
-    st.write(f"Count: {results['violations_summary']['repetition']['count']}")
-    st.write(f"Affected Outputs: {results['violations_summary']['repetition']['affected_outputs']}")
-    st.write(f"Violated Words: {', '.join(results['violations_summary']['repetition']['violated_words'])}")
+    st.text("\n=== Violations Summary ===")
+    st.text("\nRepetition Violations:")
+    st.text(f"Count: {results['violations_summary']['repetition']['count']}")
+    st.text(f"Affected Outputs: {results['violations_summary']['repetition']['affected_outputs']}")
+    st.text(f"Violated Words: {', '.join(results['violations_summary']['repetition']['violated_words'])}")
     
-    st.write("\nEnfin Misplacement:")
-    st.write(f"Count: {results['violations_summary']['enfin_misplaced']['count']}")
-    st.write(f"Affected Outputs: {results['violations_summary']['enfin_misplaced']['affected_outputs']}")
+    st.text("\nEnfin Misplacement:")
+    st.text(f"Count: {results['violations_summary']['enfin_misplaced']['count']}")
+    st.text(f"Affected Outputs: {results['violations_summary']['enfin_misplaced']['affected_outputs']}")
     
-    st.write("\n=== Detailed Analysis ===")
+    st.text("\n=== Detailed Analysis ===")
     for detail in results['details']:
-        st.write(f"\nOutput {detail['output_id']}:")
-        st.write(f"Transitions: {detail['transitions']}")
+        st.text(f"\nOutput {detail['output_id']}:")
+        st.text(f"Transitions: {detail['transitions']}")
         if detail['violations']:
-            st.write(f"Violations: {detail['violations']}")
+            st.text(f"Violations: {detail['violations']}")
         else:
-            st.write("No violations found")
+            st.text("No violations found")
 
     # Display in Streamlit
     st.subheader("Validation Results")
