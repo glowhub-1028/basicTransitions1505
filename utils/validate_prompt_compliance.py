@@ -125,29 +125,29 @@ def display_validation_results(results):
     Display validation results using Streamlit components in a clean, organized format.
     Also prints results to console.
     """
-    # Print to console
-    print("\n=== Validation Results ===")
-    print(f"Total Outputs: {results['total_outputs']}")
-    print(f"Outputs with Violations: {results['outputs_with_violations']}")
+    # Print to streamlit logs
+    st.write("\n=== Validation Results ===")
+    st.write(f"Total Outputs: {results['total_outputs']}")
+    st.write(f"Outputs with Violations: {results['outputs_with_violations']}")
     
-    print("\n=== Violations Summary ===")
-    print("\nRepetition Violations:")
-    print(f"Count: {results['violations_summary']['repetition']['count']}")
-    print(f"Affected Outputs: {results['violations_summary']['repetition']['affected_outputs']}")
-    print(f"Violated Words: {', '.join(results['violations_summary']['repetition']['violated_words'])}")
+    st.write("\n=== Violations Summary ===")
+    st.write("\nRepetition Violations:")
+    st.write(f"Count: {results['violations_summary']['repetition']['count']}")
+    st.write(f"Affected Outputs: {results['violations_summary']['repetition']['affected_outputs']}")
+    st.write(f"Violated Words: {', '.join(results['violations_summary']['repetition']['violated_words'])}")
     
-    print("\nEnfin Misplacement:")
-    print(f"Count: {results['violations_summary']['enfin_misplaced']['count']}")
-    print(f"Affected Outputs: {results['violations_summary']['enfin_misplaced']['affected_outputs']}")
+    st.write("\nEnfin Misplacement:")
+    st.write(f"Count: {results['violations_summary']['enfin_misplaced']['count']}")
+    st.write(f"Affected Outputs: {results['violations_summary']['enfin_misplaced']['affected_outputs']}")
     
-    print("\n=== Detailed Analysis ===")
+    st.write("\n=== Detailed Analysis ===")
     for detail in results['details']:
-        print(f"\nOutput {detail['output_id']}:")
-        print(f"Transitions: {detail['transitions']}")
+        st.write(f"\nOutput {detail['output_id']}:")
+        st.write(f"Transitions: {detail['transitions']}")
         if detail['violations']:
-            print(f"Violations: {detail['violations']}")
+            st.write(f"Violations: {detail['violations']}")
         else:
-            print("No violations found")
+            st.write("No violations found")
 
     # Display in Streamlit
     st.subheader("Validation Results")
@@ -205,5 +205,3 @@ if __name__ == "__main__":
     
     # Display results
     display_validation_results(results)
-    
-    print(results, '❤️')
