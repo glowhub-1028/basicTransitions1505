@@ -3,6 +3,14 @@ import string
 from collections import Counter
 import os
 import streamlit as st
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s'  # Only show the message
+)
+logger = logging.getLogger(__name__)
 
 def load_stopwords() -> Set[str]:
     stopwords_file = os.path.join(os.path.dirname(__file__), 'french_stopwords.txt')
@@ -125,31 +133,31 @@ def display_validation_results(results):
     Display validation results using Streamlit components in a clean, organized format.
     Also prints results to console.
     """
-    # Log to Streamlit
-    st.text("\n=== Validation Results ===")
-    st.text(f"Total Outputs: {results['total_outputs']}")
-    st.text(f"Outputs with Violations: {results['outputs_with_violations']}")
+    # Log to console
+    logger.info("=== Validation Results ===")
+    logger.info(f"Total Outputs: {results['total_outputs']}")
+    logger.info(f"Outputs with Violations: {results['outputs_with_violations']}")
     
-    st.text("\n=== Violations Summary ===")
-    st.text("\nRepetition Violations:")
-    st.text(f"Count: {results['violations_summary']['repetition']['count']}")
-    st.text(f"Affected Outputs: {results['violations_summary']['repetition']['affected_outputs']}")
-    st.text(f"Violated Words: {', '.join(results['violations_summary']['repetition']['violated_words'])}")
+    logger.info("=== Violations Summary ===")
+    logger.info("Repetition Violations:")
+    logger.info(f"Count: {results['violations_summary']['repetition']['count']}")
+    logger.info(f"Affected Outputs: {results['violations_summary']['repetition']['affected_outputs']}")
+    logger.info(f"Violated Words: {', '.join(results['violations_summary']['repetition']['violated_words'])}")
     
-    st.text("\nEnfin Misplacement:")
-    st.text(f"Count: {results['violations_summary']['enfin_misplaced']['count']}")
-    st.text(f"Affected Outputs: {results['violations_summary']['enfin_misplaced']['affected_outputs']}")
+    logger.info("Enfin Misplacement:")
+    logger.info(f"Count: {results['violations_summary']['enfin_misplaced']['count']}")
+    logger.info(f"Affected Outputs: {results['violations_summary']['enfin_misplaced']['affected_outputs']}")
     
-    st.text("\n=== Detailed Analysis ===")
+    logger.info("=== Detailed Analysis ===")
     for detail in results['details']:
-        st.text(f"\nOutput {detail['output_id']}:")
-        st.text(f"Transitions: {detail['transitions']}")
+        logger.info(f"Output {detail['output_id']}:")
+        logger.info(f"Transitions: {detail['transitions']}")
         if detail['violations']:
-            st.text(f"Violations: {detail['violations']}")
+            logger.info(f"Violations: {detail['violations']}")
         else:
-            st.text("No violations found")
+            logger.info("No violations found")
 
-    # Display in Streamlit
+    # Display in Streamlit UI
     st.subheader("Validation Results")
     
     # Overall statistics
@@ -189,7 +197,7 @@ def display_validation_results(results):
                 st.write("**Violations:**", detail['violations'])
             else:
                 st.success("No violations found")
-# Example usage
+
 if __name__ == "__main__":
     # Test data
     test_batch = [
