@@ -4,13 +4,7 @@ from collections import Counter
 import os
 import streamlit as st
 import logging
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s'  # Only show the message
-)
-logger = logging.getLogger(__name__)
+from utils.logger import logger
 
 def load_stopwords() -> Set[str]:
     stopwords_file = os.path.join(os.path.dirname(__file__), 'french_stopwords.txt')
