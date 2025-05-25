@@ -2,12 +2,14 @@
 
 import requests
 import os
-import streamlit as st
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Get token and URL from environment variables
-# Get token and URL from Streamlit secrets instead of env vars
-API_TOKEN = st.secrets.get("API_TOKEN")
-API_URL = st.secrets.get("API_URL")
+API_TOKEN = os.getenv('API_TOKEN')
+API_URL = os.getenv('API_URL')
 
 if not API_TOKEN:
     raise ValueError("API_TOKEN environment variable is not set")
