@@ -5,7 +5,19 @@ def layout_title_and_input():
     st.markdown("Remplace chaque `TRANSITION` par une phrase de 5 mots sans répétition de mots.")
     return st.text_area("📝 Collez le texte contenant des `TRANSITION`", height=300)
 
-def show_output(text):
+def show_output(title, chapo, text):
+    """Display the article with title, chapo, and main text."""
+    st.markdown("### 📰 Titre")
+    st.markdown(f"**{title}**")
+    
+    st.markdown("&nbsp;\n&nbsp;\n&nbsp;", unsafe_allow_html=True)
+    
+    st.markdown("### ✏️ Chapeau")
+    st.markdown(chapo)
+    
+    st.markdown("&nbsp;\n" * 3, unsafe_allow_html=True)
+    
+    st.markdown("### 🧾 Article")
     st.text_area("📝 Texte avec transitions :", text, height=300)
 
 def show_warning_or_error(missing=False, not_enough=False):

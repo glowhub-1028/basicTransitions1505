@@ -15,7 +15,7 @@ log_file = os.path.join(log_dir, f"app_{datetime.now().strftime('%Y%m%d')}.log")
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(message)s',  # Only show the message
     handlers=[
         logging.FileHandler(log_file),
         logging.StreamHandler()
