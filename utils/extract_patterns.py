@@ -1,18 +1,16 @@
 from collections import Counter
 import re
 from typing import List, Tuple
-from utils.validate_prompt_compliance import tokenize, extract_ngrams
+from utils.validate_prompt_compliance import tokenize, extract_ngrams, load_stylistic_expressions
 from utils.io import load_all_transitions  # to implement: returns List[List[str]]
 
 MIN_COUNT = 3
 
-
-def get_top_ngrams(dataset: List[List[str]], n: int, min_count: int = MIN_COUNT) -> List[Tuple[str, int]]:
+def get_top_ngrams(dataset: List[str], n: int, min_count: int = MIN_COUNT) -> List[Tuple[str, int]]:
     counter = Counter()
-    for group in dataset:
-        for phrase in group:
-            words = tokenize(phrase)
-            counter.update(extract_ngrams(words, n))
+    for phrase in dataset:
+        words = tokenize(phrase)
+        counter.update(extract_ngrams(words, n))
     return [(ng, count) for ng, count in counter.items() if count >= min_count]
 
 

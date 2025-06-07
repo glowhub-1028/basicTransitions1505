@@ -26,18 +26,42 @@ def get_transition_from_gpt(para_a, para_b, examples, model="gpt-4"):
         "Tu es un assistant de presse francophone. "
         "Ta tâche est d'insérer une transition brève et naturelle (5 mots maximum) "
         "entre deux paragraphes d'actualité régionale. "
-        "La transition doit être journalistique, fluide, neutre et ne pas répéter les débuts comme 'Par ailleurs' ou parallèlement ou sujet."
-        "the final TRANSITION in the article must be a proper concluding transition that clearly signals the end of the article. For that final transition only, choose from the following list of expressions: Enfin, Et pour finir, Pour terminer, Pour finir, En guise de conclusion, En conclusion, En guise de mot de la fin, Pour clore cette revue, Pour conclure cette sélection, Dernier point à noter, Pour refermer ce tour d’horizon. These closing transitions should only appear once and exclusively as the last transition in the article."
-        "if you use par ailleurs, c'est mieux d'étoffer, avec Par ailleurs, on annonce que, Par ailleurs, sachez que,"
-        "avoid the use of en parallèle"
-        
+        "La transition doit être journalistique, fluide, neutre et ne pas répéter les débuts comme 'Par ailleurs' ou parallèlement ou sujet. "
+        "AVANT de générer une transition, tu DOIS d'abord analyser le contenu du paragraphe qui suit pour identifier son sujet principal. "
+        "Le sujet principal est déterminé par les mots-clés et le contexte du paragraphe. "
+        "Par exemple : "
+        "- Si le paragraphe contient des mots comme 'CRS', 'police', 'sécurité', 'maintien de l'ordre' → sujet = sécurité "
+        "- Si le paragraphe contient des mots comme 'école', 'élèves', 'enseignement', 'éducation' → sujet = éducation "
+        "- Si le paragraphe contient des mots comme 'innovation', 'technologie', 'recherche' → sujet = innovation "
+        "UNE FOIS le sujet identifié, utilise UNIQUEMENT la transition correspondante : "
+        "- Pour la sécurité : 'Sur le plan sécuritaire,', 'Dans le domaine de la sécurité,', 'Côté maintien de l'ordre,' "
+        "- Pour l'éducation : 'Sur le plan éducatif,', 'Dans le domaine de l'enseignement,', 'Côté formation,' "
+        "- Pour l'innovation : 'Dans le domaine de l'innovation,', 'Sur le plan technologique,', 'Côté recherche,' "
+        "- Pour la culture : 'Sur la scène culturelle,', 'Dans le domaine artistique,', 'Côté culture,' "
+        "- Pour le sport : 'Sur le plan sportif,', 'Dans le domaine sportif,', 'Côté sport,' "
+        "- Pour l'environnement : 'Sur le plan écologique,', 'Dans le domaine environnemental,', 'Côté développement durable,' "
+        "- Pour la politique : 'Sur le plan politique,', 'Dans le domaine institutionnel,', 'Côté gouvernance,' "
+        "- Pour l'économie : 'Sur le plan économique,', 'Dans le domaine financier,', 'Côté business,' "
+        "La dernière transition de l'article doit signaler clairement la fin de l'article. "
+        "Utilise uniquement une des formules de clôture suivantes pour la dernière transition : "
+        "Enfin, Et pour finir, Pour terminer, En guise de conclusion, En conclusion, En guise de mot de la fin, "
+        "Pour clore cette revue, Pour conclure cette sélection, Dernier point à noter, Pour refermer ce tour d'horizon. "
+        "Ces formules de conclusion ne doivent apparaître qu'une seule fois, à la toute fin. "
+        "Si tu utilises 'Par ailleurs', étoffe la formulation : par exemple 'Par ailleurs, on annonce que'. "
+        "Évite 'En parallèle'."
     )
 
     # Prepare messages for OpenAI chat completion
     messages = [{"role": "system", "content": system_prompt}]
     for ex in selected_examples:
-        messages.append({"role": "user", "content": ex["input"]})
-        messages.append({"role": "assistant", "content": ex["transition"]})
+        if "paragraph_a" in ex and "paragraph_b" in ex and "transition" in ex:
+            messages.append({
+                "role": "user",
+                "content": f"{ex['paragraph_a'].strip()}\nTRANSITION\n{ex['paragraph_b'].strip()}"
+            })
+            messages.append({"role": "assistant", "content": ex["transition"].strip()})
+        else:
+            raise ValueError(f"Example format invalid: {ex}")
 
     # Add the real paragraph pair
     messages.append({
@@ -45,43 +69,26 @@ def get_transition_from_gpt(para_a, para_b, examples, model="gpt-4"):
         "content": f"{para_a.strip()}\nTRANSITION\n{para_b.strip()}"
     })
 
-    # Generate with OpenAI client
-    # response = client.chat.completions.create(
-    #     model=model,
-    #     messages=messages,
-    #     temperature=0.5,
-    #     max_tokens=20
-    # )
-
-    # Prepare request headers and body
+    # Send request to your proxy endpoint
     headers = {
         "Authorization": f"Bearer {API_TOKEN}",
         "Content-Type": "application/json"
     }
 
-    # Prepare the prompt dictionary
-    prompt_dict = {
+    payload = {
         "model": model,
         "messages": messages,
         "temperature": 0.5,
         "max_tokens": 20
     }
 
-    # Convert prompt dictionary to string
-    prompt_str = str(prompt_dict)
-
-    # Send request to /chat endpoint
-    response = requests.post(
-        API_URL,
-        headers=headers,
-        json={"prompt": prompt_str}
-    )
+    response = requests.post(API_URL, headers=headers, json={"prompt": str(payload)})
 
     if response.status_code != 200:
         raise Exception(f"API request failed with status code {response.status_code}")
 
-    response_data = response.json()
-    if response_data["status"] != "success":
-        raise Exception(f"API request failed: {response_data.get('error', 'Unknown error')}")
+    data = response.json()
+    if data.get("status") != "success":
+        raise Exception(f"API request failed: {data.get('error', 'Unknown error')}")
 
-    return response_data["reply"].strip()
+    return data["reply"].strip()

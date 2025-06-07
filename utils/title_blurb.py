@@ -1,16 +1,13 @@
 # utils/title_blurb.py
 
 import requests
-import os
 import streamlit as st
 
-# Get token and URL from environment variables
-# Get token and URL from Streamlit secrets instead of env vars
 API_TOKEN = st.secrets.get("API_TOKEN")
 API_URL = st.secrets.get("API_URL")
 
 if not API_TOKEN:
-    raise ValueError("API_TOKEN environment variable is not set")
+    raise ValueError("API_TOKEN is not set in Streamlit secrets")
 
 PROMPT = """Tu es un assistant de rédaction pour un journal local français.
 
@@ -36,8 +33,8 @@ Titre : [titre généré]
 Chapeau : [chapeau généré]
 """
 
-def generate_title_and_blurb(paragraph):
-    # Prepare the prompt dictionary
+def generate_title_and_blurb(paragraph: str):
+    
     prompt_dict = {
         "model": "gpt-4",
         "messages": [
@@ -57,18 +54,29 @@ def generate_title_and_blurb(paragraph):
         "Content-Type": "application/json"
     }
 
-    # Send request to /chat endpoint
-    response = requests.post(
-        API_URL,
-        headers=headers,
-        json={"prompt": prompt_str}
-    )
+    # 🔍 Debug log
+    st.write("🧪 Prompt sent to API:")
+    st.code(prompt_str)
+
+    response = requests.post(API_URL, headers=headers, json={"prompt": prompt_str})
+
+    # 🔍 Debug log
+    st.write("🧪 Raw API response:")
+    st.code(response.text)
 
     if response.status_code != 200:
-        raise Exception(f"API request failed with status code {response.status_code}")
+        raise Exception(
+            f"API request failed with status code {response.status_code}\n"
+            f"Response content:\n{response.text}"
+        )
 
     response_data = response.json()
-    if response_data["status"] != "success":
-        raise Exception(f"API request failed: {response_data.get('error', 'Unknown error')}")
 
+    if response_data.get("status") != "success":
+        raise Exception(
+            f"API request failed:\nStatus: {response_data.get('status')}\n"
+            f"Error: {response_data.get('error', 'Unknown error')}\n"
+            f"Full response:\n{response.text}"
+        )
+    
     return response_data["reply"].strip()

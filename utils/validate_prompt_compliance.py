@@ -20,7 +20,6 @@ def load_stylistic_expressions(filepath: str = 'stylistic_patterns.txt') -> Set[
 
 # Load stylistic patterns from file
 STYLISTIC_EXPRESSIONS: Set[str] = load_stylistic_expressions()
-print(STYLISTIC_EXPRESSIONS, "STYLISTIC_EXPRESSIONS🤞🤞🤞🤞")
 
 def tokenize(text: str) -> List[str]:
     """
